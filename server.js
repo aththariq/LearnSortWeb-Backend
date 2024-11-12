@@ -55,38 +55,7 @@ app.use("/auth/", authLimiter);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, "public")));
-
-// Initialize MongoDB session store
-const store = new MongoDBStore({
-  uri: process.env.MONGO_URI,
-  collection: "sessions",
-});
-
-// Handle session store errors
-store.on("error", function (error) {
-  console.error("Session store error:", error);
-});
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: store,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    },
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Connect to MongoDB
+// Connect to MongoDB FIRST
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -98,17 +67,49 @@ mongoose.connection.on("error", (err) => {
 
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
-});
 
-// Define authentication routes **before** the catch-all route
-app.use("/auth", authRoutes);
+  // Initialize MongoDB session store AFTER connection
+  const store = new MongoDBStore({
+    uri: process.env.MONGO_URI,
+    collection: "sessions",
+  });
 
-// Catch-all route to serve frontend
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
-});
+  // Handle session store errors
+  store.on("error", function (error) {
+    console.error("Session store error:", error);
+  });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server berjalan di port ${PORT}`);
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      store: store,
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+      },
+    })
+  );
+
+  // Initialize Passport AFTER session
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // Serve static files from the 'public' directory
+  app.use(express.static(path.join(__dirname, "public")));
+
+  // Define authentication routes **before** the catch-all route
+  app.use("/auth", authRoutes);
+
+  // Catch-all route to serve frontend
+  app.get("/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "index.html"));
+  });
+
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server berjalan di port ${PORT}`);
+  });
 });
