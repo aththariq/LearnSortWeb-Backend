@@ -24,6 +24,7 @@ passport.use(
         }
         done(null, user);
       } catch (err) {
+        console.error("Error in GoogleStrategy:", err.message);
         done(err, null);
       }
     }
@@ -39,6 +40,7 @@ passport.deserializeUser(async (id, done) => {
     const user = await User.findById(id);
     done(null, user);
   } catch (err) {
+    console.error("Error deserializing user:", err.message);
     done(err, null);
   }
 });

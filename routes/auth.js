@@ -93,14 +93,22 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
 router.get(
   "/google/callback",
   passport.authenticate("google", {
     failureRedirect: `${process.env.FRONTEND_URL}/login.html`,
   }),
   (req, res) => {
-    // Redirect to frontend main page after successful login
-    res.redirect(`${process.env.FRONTEND_URL}/main-page.html`);
+    try {
+      // Redirect to frontend main page after successful login
+      res.redirect(`${process.env.FRONTEND_URL}/main-page.html`);
+    } catch (error) {
+      console.error("Redirect error after OAuth:", error.message);
+      res.status(500).send("Internal Server Error during redirection");
+    }
   }
 );
 
@@ -114,10 +122,15 @@ router.get("/status", (req, res) => {
         email: req.user.email,
         username: req.user.username,
       },
+  }
     });
   } else {
     res.json({ authenticated: false });
   }
+});
+
+module.exports = router;
+
 });
 
 module.exports = router;
