@@ -21,6 +21,7 @@ const app = express();
 const allowedOrigins = [
   "https://learn-sort-web.vercel.app",
   "http://localhost:3000", // Add your local frontend URL for development
+  "http://127.0.0.1:5500", // Add your local frontend URL for development
 ];
 
 // Move 'trust proxy' to the very top, before any middleware
