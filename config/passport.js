@@ -4,7 +4,13 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User"); // Ensure the path is correct
 require("dotenv").config();
 
-// Configure Google OAuth Strategy
+// Debugging: Verify the User model
+console.log("User Model:", User);
+
+if (!User || typeof User.findOne !== "function") {
+  console.error("User model is not imported correctly. Check the export and import paths.");
+}
+
 passport.use(
   new GoogleStrategy(
     {
@@ -15,7 +21,7 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         // Debugging: Log the User object
-        console.log("User Model:", User);
+        console.log("User Model inside strategy:", User);
 
         let user = await User.findOne({ googleId: profile.id });
         if (!user) {
@@ -44,7 +50,6 @@ passport.deserializeUser(async (id, done) => {
     done(null, user);
   } catch (err) {
     console.error("Error deserializing user:", err.message);
-
     done(err, null);
   }
 });
