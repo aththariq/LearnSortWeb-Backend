@@ -22,10 +22,7 @@ passport.use(
           user = await User.create({
             googleId: profile.id,
             username: profile.displayName,
-          user = await User.create({
-            googleId: profile.id,
-            username: profile.displayName,
-            email: profile.emails[0].value,
+            email: profile.emails[0].value, // Added missing email field
           });
         }
         done(null, user);
@@ -51,7 +48,5 @@ passport.deserializeUser(async (id, done) => {
     done(err, null);
   }
 });
-
-module.exports = passport;
 
 module.exports = passport;

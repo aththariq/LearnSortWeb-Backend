@@ -27,7 +27,23 @@ app.use(
   })
 );
 
-app.use(helmet());
+app.use(
+  helmet({
+    permissionsPolicy: {
+      features: {
+        // Removed unsupported features
+        // 'private-state-token-redemption': ['self'],
+        // 'private-state-token-issuance': ['self'],
+        // 'browsing-topics': [],
+
+        // Example of supported features
+        geolocation: ["'self'"],
+        microphone: ["'none'"],
+        camera: ["'none'"],
+      },
+    },
+  })
+);
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
