@@ -16,7 +16,6 @@ const path = require("path");
 const User = require("./models/User"); // Move this line to the top
 
 dotenv.config();
-
 const app = express();
 
 const allowedOrigins = [
@@ -107,9 +106,11 @@ mongoose.connection.once("open", () => {
 
   // Define authentication routes **before** the catch-all route
   app.use("/auth", authRoutes);
+  console.log("Authentication routes have been registered");
 
   // Define test routes
-  app.use("/test", testRoutes); // Add this line to use test routes
+  app.use("/test", testRoutes); // Use test routes
+  console.log("Test routes have been registered");
 
   // Catch-all route to serve frontend
   app.get("/*", (req, res) => {

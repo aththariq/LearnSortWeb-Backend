@@ -4,6 +4,7 @@ const router = express.Router();
 const User = require("../models/User"); // Ensure correct import
 
 router.get("/test-user", async (req, res) => {
+  console.log("Test route '/test/test-user' was accessed"); // Add this line
   try {
     const user = await User.findOne();
     if (user) {
