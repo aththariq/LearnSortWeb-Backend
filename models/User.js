@@ -1,16 +1,13 @@
 import mongoose, { model } from "mongoose";
-const { Schema } = mongoose;
+var { Schema } = mongoose;
 
-// Definisikan skema untuk user
-const UserDetail = new Schema(
+var userSchema = new Schema(
   {
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
   },
-  { collection: "userInfo" } 
-);
+  { collection: "userInfo" }
+); // nama koleksi 'userInfo'
 
-// Buat model berdasarkan skema dan ekspor
-const User = model("User", UserDetail);
-export default User;
+export default model("User", userSchema); // nama model 'User'
