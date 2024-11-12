@@ -37,13 +37,13 @@ app.use(express.json());
 
 const store = new MongoDBStore({
   uri: process.env.MONGO_URI,
-  collection: "your_session_collection",
+  collection: "sessions",
   ssl: true,
   sslValidate: false,
 });
 
 store.on("error", function (error) {
-  console.log("Session store error:", error);
+  console.error("Session store error:", error);
 });
 
 app.use(
