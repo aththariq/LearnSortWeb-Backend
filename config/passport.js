@@ -1,7 +1,12 @@
 // backend/config/passport.js
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("../models/User"); // Ensure "../models/User.js" exists and uses uppercase "U"
+const User = require("../models/User"); // Ensure correct path and casing
+
+// Add additional logging to verify the imported User model
+console.log("Imported User model:", User);
+console.log("Does User have findOne method?", typeof User.findOne === 'function');
+
 require("dotenv").config();
 
 // Debugging: Verify User model and its methods

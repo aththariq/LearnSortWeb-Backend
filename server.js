@@ -10,7 +10,6 @@ const rateLimit = require("express-rate-limit");
 const authRoutes = require("./routes/auth");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
-const User = require("./models/User"); // Ensure this import is correct and not overridden later
 
 dotenv.config();
 
@@ -66,6 +65,9 @@ mongoose.connection.on("error", (err) => {
 
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
+
+  // Require User model after connecting to MongoDB
+  const User = require("./models/User"); // Ensure this is required after connection
 
   // Initialize MongoDB session store AFTER connection
   const store = new MongoDBStore({
