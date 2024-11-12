@@ -15,11 +15,15 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = ["https://nama-frontend-vercel.vercel.app"];
+const allowedOrigins = [
+  "https://nama-frontend-vercel.vercel.app",
+  "http://localhost:3000" // Add your local frontend URL
+];
 
 app.use(
   cors({
     origin: allowedOrigins,
+    credentials: true, // Allow cookies to be sent
   })
 );
 
