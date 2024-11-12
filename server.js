@@ -10,7 +10,7 @@ const rateLimit = require("express-rate-limit");
 const authRoutes = require("./routes/auth");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
-const User = require("./models/User"); // Ensure the User model is required early
+const User = require("./models/User"); // Ensure this import is correct and not overridden later
 
 dotenv.config();
 

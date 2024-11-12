@@ -25,5 +25,5 @@ const UserSchema = new Schema({
   },
 });
 
-// Export the model directly with exact casing
+// Ensure this is the only export
 module.exports = mongoose.model("User", UserSchema);

@@ -1,7 +1,7 @@
 // backend/config/passport.js
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("../models/User"); // Ensure correct path and casing
+const User = require("../models/User"); // Ensure "../models/User.js" exists and uses uppercase "U"
 require("dotenv").config();
 
 // Debugging: Verify User model and its methods
