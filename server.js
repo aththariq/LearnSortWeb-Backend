@@ -36,13 +36,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const store = new MongoDBStore({
-  uri: process.env.MONGO_URI, 
-  collection: "sessions",
-  connectionOptions: { tls: true, tlsAllowInvalidCertificates: true }, 
+  uri: process.env.MONGO_URI,
+  collection: "your_session_collection",
+  ssl: true,
+  sslValidate: false,
 });
 
 store.on("error", function (error) {
-  console.error("Error connecting to MongoDB session store:", error);
+  console.log("Session store error:", error);
 });
 
 app.use(
@@ -62,13 +63,20 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log(err));
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  ssl: true,
+  sslValidate: false,
+});
+
+mongoose.connection.on("error", (err) => {
+  console.log("Mongoose connection error:", err);
+});
+
+mongoose.connection.once("open", () => {
+  console.log("Connected to MongoDB");
+});
 
 app.use("/auth", authRoutes);
 
