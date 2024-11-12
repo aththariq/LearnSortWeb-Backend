@@ -1,11 +1,12 @@
 // backend/config/passport.js
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("../models/User"); // Changed 'user' to 'User'
+const User = require("../models/User"); // Ensure correct path and casing
 require("dotenv").config();
 
-// Debugging: Verify User model
+// Debugging: Verify User model and its methods
 console.log("User model in passport.js:", User);
+console.log("Is User.findOne a function?", typeof User.findOne === 'function'); // Added check
 
 passport.use(
   new GoogleStrategy(

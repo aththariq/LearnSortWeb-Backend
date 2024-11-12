@@ -1,7 +1,7 @@
 // backend/models/User.js
 
 const mongoose = require("mongoose");
-const { Schema } = mongoose; // Added Schema extraction
+const { Schema } = mongoose; // Ensure Schema is correctly imported
 
 const UserSchema = new Schema({
   username: {
@@ -25,5 +25,5 @@ const UserSchema = new Schema({
   },
 });
 
-// Export the model directly without assigning to a variable
+// Export the model directly with exact casing
 module.exports = mongoose.model("User", UserSchema);
