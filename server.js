@@ -38,17 +38,12 @@ app.use(express.json());
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
 
-// Serve frontend files
-app.get("/*", (req, res) => {
+const store = new MongoDBStore({
+  uri: process.env.MONGO_URI,
   res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });
 
 const store = new MongoDBStore({
-  uri: process.env.MONGO_URI,
-  collection: "sessions",
-});
-
-store.on("error", function (error) {
   console.error("Session store error:", error);
 });
 
@@ -86,6 +81,11 @@ app.use("/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
+});
+
+// Serve frontend files
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });
 
 const PORT = process.env.PORT || 3000;
