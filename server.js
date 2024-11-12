@@ -18,13 +18,13 @@ const allowedOrigins = [
   "https://learn-sort-web.vercel.app",
   "http://localhost:3000", // Add your local frontend URL for development
 ];
+  "https://learn-sort-web.vercel.app",
+  "http://localhost:3000", // Add your local frontend URL for development
+];
 
 // Move 'trust proxy' to the very top, before any middleware
 app.set("trust proxy", 1); // Trust first proxy
 
-app.use(
-  cors({
-    origin: allowedOrigins,
     credentials: true, // Allow cookies to be sent
   })
 );
@@ -45,6 +45,7 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: "Terlalu banyak permintaan, coba lagi setelah 15 menit",
+  keyGenerator: (req) => req.ip, // Explicitly set key generator
 });
 app.use("/auth/", authLimiter);
 
@@ -111,4 +112,7 @@ mongoose.connection.once("open", () => {
   app.listen(PORT, () => {
     console.log(`Server berjalan di port ${PORT}`);
   });
+});
+  });
+
 });
