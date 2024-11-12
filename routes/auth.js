@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
-const User = require("../models/User");
+var User = require("../models/User");
 
 console.log("User model:", User);
 console.log(
