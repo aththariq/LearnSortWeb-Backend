@@ -3,7 +3,13 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
-const User = require("../models/User"); // Ensure correct import
+const User = require("../models/User");
+
+console.log("User model:", User);
+console.log(
+  "Does User have findOne method?",
+  typeof User.findOne === "function"
+);
 
 // Register Route
 router.post(

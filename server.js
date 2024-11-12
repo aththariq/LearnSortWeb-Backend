@@ -1,5 +1,3 @@
-// backend/server.js
-
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
@@ -8,31 +6,30 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const authRoutes = require("./routes/auth");
-const testRoutes = require("./routes/test"); // Import test routes
 const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
-
-// Require the User model early to ensure it's registered with Mongoose
-const User = require("./models/User"); // Move this line to the top
+const testRoutes = require("./routes/test");
 
 dotenv.config();
 const app = express();
 
 const allowedOrigins = [
   "https://learn-sort-web.vercel.app",
-  "http://localhost:3000", // Add your local frontend URL for development
-  "http://127.0.0.1:5500", // Add your local frontend URL for development
+  "http://127.0.0.1:5500",
 ];
 
-// Move 'trust proxy' to the very top, before any middleware
-app.set("trust proxy", 1); // Trust first proxy
-
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true, // Allow cookies to be sent
-  })
-);
+const corsOptions = {
+  origin: function (origin, callback) {
+    console.log("Request Origin:", origin); 
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 app.use(
   helmet({
@@ -50,7 +47,8 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: "Terlalu banyak permintaan, coba lagi setelah 15 menit",
-  keyGenerator: (req) => req.ip, // Explicitly set key generator
+  keyGenerator: (req) => req.ip,
+  skip: (req) => req.method === "OPTIONS",
 });
 app.use("/auth/", authLimiter);
 
@@ -70,13 +68,11 @@ mongoose.connection.on("error", (err) => {
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
 
-  // Initialize MongoDB session store AFTER connection
   const store = new MongoDBStore({
     uri: process.env.MONGO_URI,
     collection: "sessions",
   });
 
-  // Handle session store errors
   store.on("error", function (error) {
     console.error("Session store error:", error);
   });
@@ -95,30 +91,20 @@ mongoose.connection.once("open", () => {
     })
   );
 
-  // Import Passport AFTER session and models are loaded
   const passport = require("./config/passport");
 
-  // Initialize Passport AFTER session
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Serve static files from the 'public' directory
   app.use(express.static(path.join(__dirname, "public")));
 
-  // Define authentication routes **before** the catch-all route
   app.use("/auth", authRoutes);
   console.log("Authentication routes have been registered");
 
-  // Define test routes
-  app.use("/test", testRoutes); // Use test routes
+  app.use("/test", testRoutes);
   console.log("Test routes have been registered");
 
-  // Catch-all route to serve frontend
-  app.get("/*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "index.html"));
-  });
-
-  const PORT = process.env.PORT || 5000;
+  const PORT = process.env.PORT || 5001;
   app.listen(PORT, () => {
     console.log(`Server berjalan di port ${PORT}`);
   });
