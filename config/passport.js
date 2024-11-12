@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs"); // Import bcrypt
 const mongoose = require("mongoose"); // Import mongoose
 
 // Retrieve the User model from Mongoose
-const User = mongoose.model("User"); // Use mongoose.model to get the registered model
+const User = require("../models/User"); // Correct import
 
 // Add additional logging to verify the imported User model
 console.log("Imported User model:", User);
