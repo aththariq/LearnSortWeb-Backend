@@ -1,7 +1,7 @@
 // backend/config/passport.js
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("../models/User"); // Ensure the path to User model is correct
+const User = require("../models/User"); // Ensure the path is correct
 require("dotenv").config();
 
 // Configure Google OAuth Strategy
@@ -14,8 +14,14 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        // Debugging: Log the User object
+        console.log("User Model:", User);
+
         let user = await User.findOne({ googleId: profile.id });
         if (!user) {
+          user = await User.create({
+            googleId: profile.id,
+            username: profile.displayName,
           user = await User.create({
             googleId: profile.id,
             username: profile.displayName,
@@ -41,8 +47,11 @@ passport.deserializeUser(async (id, done) => {
     done(null, user);
   } catch (err) {
     console.error("Error deserializing user:", err.message);
+
     done(err, null);
   }
 });
+
+module.exports = passport;
 
 module.exports = passport;

@@ -24,8 +24,8 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    // Include googleId as optional
-    const { username, email, password, googleId } = req.body;
+    // Extract user details
+    const { username, email, password } = req.body;
 
     try {
       // Check if user already exists
