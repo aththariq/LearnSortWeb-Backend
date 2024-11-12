@@ -1,8 +1,8 @@
 // backend/server.js
 const express = require("express");
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); // Ensure Mongoose is imported first
 const session = require("express-session");
-const passport = require("./config/passport");
+const passport = require("./config/passport"); // Import Passport after Mongoose connection
 const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");

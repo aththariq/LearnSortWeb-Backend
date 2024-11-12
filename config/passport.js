@@ -4,8 +4,10 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User"); // Ensure correct path and casing
 require("dotenv").config();
 
-// Debugging: Verify the User model
+// Debugging: Verify the User model type and methods
 console.log("User Model:", User);
+console.log("Type of User:", typeof User);
+console.log("User.findOne exists:", typeof User.findOne === "function");
 
 if (!User || typeof User.findOne !== "function") {
   console.error("User model is not imported correctly. Check the export and import paths.");

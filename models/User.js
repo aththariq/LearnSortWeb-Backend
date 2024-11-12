@@ -23,4 +23,5 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("User", UserSchema);
+// Ensure the model is compiled only once to prevent OverwriteModelError
+module.exports = mongoose.models.User || mongoose.model("User", UserSchema);
