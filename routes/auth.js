@@ -90,6 +90,7 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
+/*
 // Google OAuth Routes
 router.get(
   "/google",
@@ -111,6 +112,7 @@ router.get(
     }
   }
 );
+*/
 
 // Status Route
 router.get("/status", (req, res) => {

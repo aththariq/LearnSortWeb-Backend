@@ -1,7 +1,9 @@
 require("dotenv").config(); // Ensure dotenv is configured first
 
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const LocalStrategy = require("passport-local").Strategy; // Add this line
+const bcrypt = require("bcryptjs"); // Import bcrypt
+
 const mongoose = require("mongoose"); // Import mongoose
 
 // Retrieve the User model from Mongoose
@@ -11,9 +13,38 @@ const User = mongoose.model("User"); // Use mongoose.model to get the registered
 console.log("Imported User model:", User);
 console.log("Does User have findOne method?", typeof User.findOne === 'function');
 
-// Debugging: Verify User model and its methods
-console.log("User model in passport.js:", User);
-console.log("Is User.findOne a function?", typeof User.findOne === 'function'); // Added check
+// Configure Local Strategy
+passport.use(
+  new LocalStrategy(
+    { usernameField: "email" }, // Use email instead of default username
+    async (email, password, done) => {
+      try {
+        const user = await User.findOne({ email });
+        if (!user) {
+          return done(null, false, { message: "Email tidak terdaftar" });
+        }
+
+        if (!user.password) {
+          return done(null, false, { message: "Gunakan login OAuth" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+          return done(null, false, { message: "Password salah" });
+        }
+
+        return done(null, user);
+      } catch (err) {
+        console.error("Error in LocalStrategy:", err);
+        return done(err);
+      }
+    }
+  )
+);
+
+// Comment out Google Strategy for manual authentication
+/*
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 passport.use(
   new GoogleStrategy(
@@ -40,6 +71,7 @@ passport.use(
     }
   )
 );
+*/
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
