@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
 // Define the schema with a specific collection name ("userInfo")
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -11,5 +11,5 @@ const userSchema = new mongoose.Schema(
 );
 
 // Create the model with the specified collection name and export it
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+const User = model("User", userSchema);
+export default User;

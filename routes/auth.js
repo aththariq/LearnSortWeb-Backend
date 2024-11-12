@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const passport = require("passport");
-const bcrypt = require("bcryptjs");
-const { body, validationResult } = require("express-validator");
-const User = require("../models/User"); // Ensure correct import
+import { Router } from "express";
+const router = Router();
+import { authenticate } from "passport";
+import { genSalt, hash } from "bcryptjs";
+import { body, validationResult } from "express-validator";
+import User from "../models/User"; // Ensure correct import
 
 console.log("User model:", User);
 console.log(
@@ -45,8 +45,8 @@ router.post(
       const newUser = new User({ username, email, password });
 
       // Hash password
-      const salt = await bcrypt.genSalt(10);
-      newUser.password = await bcrypt.hash(password, salt);
+      const salt = await genSalt(10);
+      newUser.password = await hash(password, salt);
 
       await newUser.save();
       res.status(201).json({ msg: "User terdaftar" });
@@ -70,7 +70,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    passport.authenticate("local", (err, user, info) => {
+    authenticate("local", (err, user, info) => {
       if (err) return next(err);
       if (!user) return res.status(400).json({ msg: info.message });
 
@@ -136,4 +136,4 @@ router.get("/status", (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

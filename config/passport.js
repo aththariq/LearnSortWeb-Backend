@@ -7,11 +7,14 @@ const bcrypt = require("bcryptjs"); // Import bcrypt
 const mongoose = require("mongoose"); // Import mongoose
 
 // Retrieve the User model from Mongoose
-const User = require("../models/User"); // Correct import
+const User = require("../models/User").default; // Correct import
 
 // Add additional logging to verify the imported User model
 console.log("Imported User model:", User);
-console.log("Does User have findOne method?", typeof User.findOne === 'function');
+console.log(
+  "Does User have findOne method?",
+  typeof User.findOne === "function"
+);
 
 // Configure Local Strategy
 passport.use(

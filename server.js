@@ -5,10 +5,10 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const authRoutes = require("./routes/auth");
+const authRoutes = require("./routes/auth").default;
 const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
-const testRoutes = require("./routes/test");
+const testRoutes = require("./routes/test").default;
 
 dotenv.config();
 const app = express();
@@ -20,7 +20,7 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log("Request Origin:", origin); 
+    console.log("Request Origin:", origin);
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -31,7 +31,7 @@ const corsOptions = {
 };
 
 // Trust the first proxy (e.g., Heroku)
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 
 app.use(cors(corsOptions));
 
