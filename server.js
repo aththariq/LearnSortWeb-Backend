@@ -30,7 +30,6 @@ const corsOptions = {
   credentials: true,
 };
 
-// Trust the first proxy (e.g., Heroku)
 app.set("trust proxy", 1);
 
 app.use(cors(corsOptions));
