@@ -38,8 +38,6 @@ app.use(express.json());
 const store = new MongoDBStore({
   uri: process.env.MONGO_URI,
   collection: "sessions",
-  ssl: true,
-  sslValidate: false,
 });
 
 store.on("error", function (error) {
@@ -66,8 +64,6 @@ app.use(passport.session());
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  ssl: true,
-  sslValidate: false,
 });
 
 mongoose.connection.on("error", (err) => {
