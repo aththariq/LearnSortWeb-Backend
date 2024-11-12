@@ -2,7 +2,6 @@
 const express = require("express");
 const mongoose = require("mongoose"); // Ensure Mongoose is imported first
 const session = require("express-session");
-const passport = require("./config/passport"); // Import Passport after Mongoose connection
 const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -10,6 +9,11 @@ const rateLimit = require("express-rate-limit");
 const authRoutes = require("./routes/auth");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
+
+// **Import the User model before initializing Passport**
+const User = require("./models/User"); // Add this line
+
+const passport = require("./config/passport"); // Import Passport after models are loaded
 
 dotenv.config();
 
