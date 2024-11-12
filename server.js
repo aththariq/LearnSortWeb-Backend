@@ -17,7 +17,7 @@ const app = express();
 
 const allowedOrigins = [
   "https://learn-sort-web.vercel.app",
-  "http://localhost:3000" // Add your local frontend URL for development
+  "http://localhost:3000", // Add your local frontend URL for development
 ];
 
 app.use(
