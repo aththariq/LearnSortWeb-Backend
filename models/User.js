@@ -11,5 +11,5 @@ const userSchema = new mongoose.Schema(
 );
 
 // Create the model with the specified collection name and export it
-const UserDetails = mongoose.model("UserDetails", userSchema);
-module.exports = UserDetails;
+const User = mongoose.model("User", userSchema);
+module.exports = User;

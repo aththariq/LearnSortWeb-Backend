@@ -43,6 +43,9 @@ app.use(
   })
 );
 
+// Trust the first proxy (e.g., Heroku)
+app.set('trust proxy', 1);
+
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
