@@ -38,7 +38,7 @@ app.use(express.json());
 const store = new MongoDBStore({
   uri: process.env.MONGO_URI, 
   collection: "sessions",
-  connectionOptions: { ssl: true, sslValidate: false }, 
+  connectionOptions: { tls: true, tlsAllowInvalidCertificates: true }, 
 });
 
 store.on("error", function (error) {
