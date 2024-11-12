@@ -1,3 +1,4 @@
+// backend/config/passport.js
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User"); // pastikan path ke model User sesuai
@@ -11,16 +12,14 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL:
         process.env.NODE_ENV === "production"
-          ? `${process.env.FRONTEND_URL}/auth/google/callback`
-          : "http://localhost:3000/auth/google/callback", // sesuaikan dengan port lokal
+          ? `${process.env.BACKEND_URL}/auth/google/callback`
+          : "http://localhost:5000/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Cari user berdasarkan Google ID
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
-          // Jika user belum ada, buat user baru
           user = await User.create({
             googleId: profile.id,
             username: profile.displayName,
@@ -28,7 +27,7 @@ passport.use(
           });
         }
 
-        done(null, user); // Selesaikan autentikasi dan teruskan user
+        done(null, user);
       } catch (err) {
         done(err, null);
       }
@@ -36,7 +35,6 @@ passport.use(
   )
 );
 
-// Serialize dan deserialize user untuk session management
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
