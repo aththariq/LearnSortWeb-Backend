@@ -1,4 +1,5 @@
 // backend/server.js
+
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
@@ -9,6 +10,7 @@ const rateLimit = require("express-rate-limit");
 const authRoutes = require("./routes/auth");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
+const User = require("./models/User"); // Ensure the User model is required early
 
 dotenv.config();
 
@@ -18,13 +20,13 @@ const allowedOrigins = [
   "https://learn-sort-web.vercel.app",
   "http://localhost:3000", // Add your local frontend URL for development
 ];
-  "https://learn-sort-web.vercel.app",
-  "http://localhost:3000", // Add your local frontend URL for development
-];
 
 // Move 'trust proxy' to the very top, before any middleware
 app.set("trust proxy", 1); // Trust first proxy
 
+app.use(
+  cors({
+    origin: allowedOrigins,
     credentials: true, // Allow cookies to be sent
   })
 );
@@ -112,7 +114,4 @@ mongoose.connection.once("open", () => {
   app.listen(PORT, () => {
     console.log(`Server berjalan di port ${PORT}`);
   });
-});
-  });
-
 });
