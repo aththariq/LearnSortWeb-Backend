@@ -99,8 +99,8 @@ router.get(
     failureRedirect: `${process.env.FRONTEND_URL}/login.html`,
   }),
   (req, res) => {
-    // Redirect to frontend dashboard after successful login
-    res.redirect(`${process.env.FRONTEND_URL}/dashboard.html`);
+    // Redirect to frontend main page after successful login
+    res.redirect(`${process.env.FRONTEND_URL}/main-page.html`);
   }
 );
 
