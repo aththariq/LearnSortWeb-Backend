@@ -19,6 +19,9 @@ const allowedOrigins = [
   "http://localhost:3000", // Add your local frontend URL for development
 ];
 
+// Trust proxy settings for Heroku
+app.set("trust proxy", 1); // Trust first proxy
+
 app.use(
   cors({
     origin: allowedOrigins,

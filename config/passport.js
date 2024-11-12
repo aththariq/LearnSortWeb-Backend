@@ -1,8 +1,11 @@
 // backend/config/passport.js
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("../models/User"); // Corrected import statement
+const User = require("../models/User"); // Changed 'user' to 'User'
 require("dotenv").config();
+
+// Debugging: Verify User model
+console.log("User model in passport.js:", User);
 
 passport.use(
   new GoogleStrategy(
