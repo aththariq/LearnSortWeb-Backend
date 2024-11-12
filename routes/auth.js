@@ -82,7 +82,10 @@ router.post(
 // Logout Route
 router.get("/logout", (req, res, next) => {
   req.logout(function (err) {
-    if (err) return next(err);
+    if (err) {
+      console.error("Logout error:", err.message);
+      return next(err);
+    }
     res.json({ msg: "Logout berhasil" });
   });
 });
@@ -90,9 +93,6 @@ router.get("/logout", (req, res, next) => {
 // Google OAuth Routes
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
@@ -122,15 +122,10 @@ router.get("/status", (req, res) => {
         email: req.user.email,
         username: req.user.username,
       },
-  }
     });
   } else {
     res.json({ authenticated: false });
   }
-});
-
-module.exports = router;
-
 });
 
 module.exports = router;
