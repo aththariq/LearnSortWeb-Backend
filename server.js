@@ -36,8 +36,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const store = new MongoDBStore({
-  uri: process.env.MONGO_URI,
+  uri: process.env.MONGO_URI, 
   collection: "sessions",
+  connectionOptions: { ssl: true, sslValidate: false }, 
 });
 
 store.on("error", function (error) {
