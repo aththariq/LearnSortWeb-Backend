@@ -38,12 +38,14 @@ app.use(express.json());
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
 
+// Initialize MongoDB session store
 const store = new MongoDBStore({
   uri: process.env.MONGO_URI,
-  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
+  collection: "sessions",
 });
 
-const store = new MongoDBStore({
+// Handle session store errors
+store.on("error", function (error) {
   console.error("Session store error:", error);
 });
 
@@ -64,6 +66,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -77,13 +80,10 @@ mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
 });
 
+// Define authentication routes **before** the catch-all route
 app.use("/auth", authRoutes);
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
-// Serve frontend files
+// Catch-all route to serve frontend
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });
