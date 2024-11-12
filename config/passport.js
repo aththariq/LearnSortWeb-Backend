@@ -1,10 +1,10 @@
 // backend/config/passport.js
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("../models/User"); // pastikan path ke model User sesuai
+const User = require("../models/User"); // Ensure the path to User model is correct
 require("dotenv").config();
 
-// Konfigurasi Google OAuth Strategy
+// Configure Google OAuth Strategy
 passport.use(
   new GoogleStrategy(
     {

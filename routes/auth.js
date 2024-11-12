@@ -28,7 +28,7 @@ router.post(
     const { username, email, password, googleId } = req.body;
 
     try {
-      // Cek apakah user sudah ada
+      // Check if user already exists
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res
