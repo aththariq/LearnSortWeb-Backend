@@ -1,6 +1,6 @@
 // backend/server.js
 const express = require("express");
-const mongoose = require("mongoose"); // Ensure Mongoose is imported first
+const mongoose = require("mongoose");
 const session = require("express-session");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -9,11 +9,6 @@ const rateLimit = require("express-rate-limit");
 const authRoutes = require("./routes/auth");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
-
-// **Import the User model before initializing Passport**
-const User = require("./models/User"); // Add this line
-
-const passport = require("./config/passport"); // Import Passport after models are loaded
 
 dotenv.config();
 
@@ -35,12 +30,6 @@ app.use(
   helmet({
     permissionsPolicy: {
       features: {
-        // Removed unsupported features
-        // 'private-state-token-redemption': ['self'],
-        // 'private-state-token-issuance': ['self'],
-        // 'browsing-topics': [],
-
-        // Example of supported features
         geolocation: ["'self'"],
         microphone: ["'none'"],
         camera: ["'none'"],
@@ -96,6 +85,9 @@ mongoose.connection.once("open", () => {
       },
     })
   );
+
+  // Import Passport AFTER session and models are loaded
+  const passport = require("./config/passport");
 
   // Initialize Passport AFTER session
   app.use(passport.initialize());
