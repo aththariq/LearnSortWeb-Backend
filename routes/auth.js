@@ -1,4 +1,3 @@
-// backend/routes/auth.js
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
@@ -19,7 +18,7 @@ router.post(
       .custom((value, { req }) => value === req.body.password)
       .withMessage("Password tidak cocok"),
   ],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -27,33 +26,27 @@ router.post(
 
     const { username, email, password } = req.body;
 
-    // Cek apakah user sudah ada
-    User.findOne({ email: email }).then((user) => {
-      if (user) {
+    try {
+      // Cek apakah user sudah ada
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
         return res
           .status(400)
           .json({ errors: [{ msg: "Email sudah terdaftar" }] });
-      } else {
-        const newUser = new User({
-          username,
-          email,
-          password,
-        });
-
-        // Hash password
-        bcrypt.genSalt(10, (err, salt) => {
-          if (err) throw err;
-          bcrypt.hash(newUser.password, salt, (err, hash) => {
-            if (err) throw err;
-            newUser.password = hash;
-            newUser
-              .save()
-              .then((user) => res.status(201).json({ msg: "User terdaftar" }))
-              .catch((err) => console.log(err));
-          });
-        });
       }
-    });
+
+      const newUser = new User({ username, email, password });
+
+      // Hash password
+      const salt = await bcrypt.genSalt(10);
+      newUser.password = await bcrypt.hash(password, salt);
+
+      await newUser.save();
+      res.status(201).json({ msg: "User terdaftar" });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    }
   }
 );
 
@@ -71,16 +64,11 @@ router.post(
     }
 
     passport.authenticate("local", (err, user, info) => {
-      if (err) {
-        return next(err);
-      }
-      if (!user) {
-        return res.status(400).json({ msg: info.message });
-      }
+      if (err) return next(err);
+      if (!user) return res.status(400).json({ msg: info.message });
+
       req.logIn(user, (err) => {
-        if (err) {
-          return next(err);
-        }
+        if (err) return next(err);
         return res.json({
           msg: "Login berhasil",
           user: { id: user.id, email: user.email, username: user.username },
@@ -93,9 +81,7 @@ router.post(
 // Logout Route
 router.get("/logout", (req, res, next) => {
   req.logout(function (err) {
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
     res.json({ msg: "Logout berhasil" });
   });
 });
@@ -109,11 +95,11 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "https://nama-frontend-vercel.vercel.app/login.html",
+    failureRedirect: `${process.env.FRONTEND_URL}/login.html`,
   }),
   (req, res) => {
     // Redirect ke frontend dashboard setelah berhasil login
-    res.redirect("https://nama-frontend-vercel.vercel.app/dashboard.html");
+    res.redirect(`${process.env.FRONTEND_URL}/dashboard.html`);
   }
 );
 
