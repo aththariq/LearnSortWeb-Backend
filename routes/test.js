@@ -1,7 +1,7 @@
 // backend/routes/test.js
 const express = require("express");
 const router = express.Router();
-const User = require("../models/User"); // Changed 'user' to 'User'
+const User = require("../models/User"); // Ensure correct import
 
 router.get("/test-user", async (req, res) => {
   try {

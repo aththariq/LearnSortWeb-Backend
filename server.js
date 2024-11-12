@@ -8,8 +8,12 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const authRoutes = require("./routes/auth");
+const testRoutes = require("./routes/test"); // Import test routes
 const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
+
+// Require the User model early to ensure it's registered with Mongoose
+const User = require("./models/User"); // Move this line to the top
 
 dotenv.config();
 
@@ -66,9 +70,6 @@ mongoose.connection.on("error", (err) => {
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
 
-  // Require User model after connecting to MongoDB
-  const User = require("./models/User"); // Ensure this is required after connection
-
   // Initialize MongoDB session store AFTER connection
   const store = new MongoDBStore({
     uri: process.env.MONGO_URI,
@@ -106,6 +107,9 @@ mongoose.connection.once("open", () => {
 
   // Define authentication routes **before** the catch-all route
   app.use("/auth", authRoutes);
+
+  // Define test routes
+  app.use("/test", testRoutes); // Add this line to use test routes
 
   // Catch-all route to serve frontend
   app.get("/*", (req, res) => {

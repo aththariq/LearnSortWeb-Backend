@@ -1,13 +1,15 @@
-// backend/config/passport.js
+require("dotenv").config(); // Ensure dotenv is configured first
+
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("../models/User"); // Ensure correct path and casing
+const mongoose = require("mongoose"); // Import mongoose
+
+// Retrieve the User model from Mongoose
+const User = mongoose.model("User"); // Use mongoose.model to get the registered model
 
 // Add additional logging to verify the imported User model
 console.log("Imported User model:", User);
 console.log("Does User have findOne method?", typeof User.findOne === 'function');
-
-require("dotenv").config();
 
 // Debugging: Verify User model and its methods
 console.log("User model in passport.js:", User);
