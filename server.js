@@ -2,7 +2,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
-const passport = require("./config/passport"); // Import passport tanpa mengeksekusi
+const passport = require("./config/passport");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -19,7 +19,6 @@ const allowedOrigins = ["https://nama-frontend-vercel.vercel.app"];
 app.use(
   cors({
     origin: allowedOrigins,
-    credentials: true,
   })
 );
 
@@ -76,7 +75,7 @@ mongoose.connection.once("open", () => {
 
 app.use("/auth", authRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server berjalan di port ${PORT}`);
 });
