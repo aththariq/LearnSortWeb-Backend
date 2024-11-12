@@ -9,6 +9,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const authRoutes = require("./routes/auth");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const path = require("path");
 
 dotenv.config();
 
@@ -33,6 +34,9 @@ app.use("/auth/", authLimiter);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, "public")));
 
 const store = new MongoDBStore({
   uri: process.env.MONGO_URI,
