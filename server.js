@@ -98,10 +98,10 @@ mongoose.connection.once("open", () => {
     })
   );
 
+  require('./config/passport'); 
+
   app.use(passport.initialize());
   app.use(passport.session());
-
-  require('./config/passport'); 
 
   app.use(express.static(path.join(__dirname, "public")));
 
