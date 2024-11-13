@@ -5,10 +5,10 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const authRoutes = require("./routes/auth").default;
+const authRoutes = require("./routes/auth"); // Removed .default
 const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
-const testRoutes = require("./routes/test").default;
+const testRoutes = require("./routes/test"); // Removed .default
 
 dotenv.config();
 const app = express();
@@ -104,10 +104,10 @@ mongoose.connection.once("open", () => {
 
   app.use(express.static(path.join(__dirname, "public")));
 
-  app.use("/auth", authRoutes);
+  app.use("/auth", authRoutes); // Now correctly references the router
   console.log("Authentication routes have been registered");
 
-  app.use("/test", testRoutes);
+  app.use("/test", testRoutes); // Now correctly references the router
   console.log("Test routes have been registered");
 
   const PORT = process.env.PORT || 5001;
