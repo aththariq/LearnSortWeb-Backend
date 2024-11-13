@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
   recentActivities: [
     {
       activity: { type: String, required: true },
-      xpGained: { type: Number, required: true }, // Added XP Gained
+      xpGained: { type: Number, required: true }, // Ensure Number type
       date: { type: Date, default: Date.now },
     },
   ],

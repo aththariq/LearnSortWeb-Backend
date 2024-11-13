@@ -143,8 +143,8 @@ router.post(
   [
     body("activity").notEmpty().withMessage("Activity is required"),
     body("xpGained")
-      .isInt({ min: 1 })
-      .withMessage("XP gained must be a positive integer"),
+      .isFloat({ min: 0.1 }) // Changed from isInt to isFloat
+      .withMessage("XP gained must be a positive number"),
   ],
   async (req, res) => {
     const errors = validationResult(req);
