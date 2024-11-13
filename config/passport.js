@@ -1,8 +1,8 @@
-// config/passport.js
 require("dotenv").config(); // Pastikan dotenv dikonfigurasi terlebih dahulu
 
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const GoogleStrategy = require("passport-google-oauth20").Strategy; // Ensure correct import
 const bcrypt = require("bcryptjs");
 const User = require("../models/User"); // Pastikan path benar
 
@@ -37,10 +37,7 @@ passport.use(
   )
 );
 
-/*
-// Google Strategy (dalam komentar)
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-
+// Configure Google Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -66,7 +63,6 @@ passport.use(
     }
   )
 );
-*/
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

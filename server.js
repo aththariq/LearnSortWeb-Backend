@@ -5,10 +5,11 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const authRoutes = require("./routes/auth"); // Removed .default
+const passport = require("passport"); // Import passport
+const authRoutes = require("./routes/auth");
+const testRoutes = require("./routes/test");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
-const testRoutes = require("./routes/test"); // Removed .default
 
 dotenv.config();
 const app = express();
@@ -97,10 +98,10 @@ mongoose.connection.once("open", () => {
     })
   );
 
-  const passport = require("./config/passport");
-
   app.use(passport.initialize());
   app.use(passport.session());
+
+  require('./config/passport'); // Ensure this is after passport initialization
 
   app.use(express.static(path.join(__dirname, "public")));
 
