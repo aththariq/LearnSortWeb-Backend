@@ -14,7 +14,7 @@ passport.use(
     { usernameField: "email" }, // Gunakan email sebagai username
     async (email, password, done) => {
       try {
-        const user = await User.findOne({ email }).limit(1);
+        const user = await User.findOne({ email }); // Removed .limit(1)
         if (!user) {
           return done(null, false, { message: "Email tidak terdaftar" });
         }
