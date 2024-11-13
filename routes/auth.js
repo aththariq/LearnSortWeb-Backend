@@ -168,8 +168,8 @@ router.post(
       user.xp += xpGained;
       user.recentActivities.unshift({ activity, xpGained });
 
-      // Keep only the latest 5 activities
-      if (user.recentActivities.length > 5) {
+      // Keep only the latest 4 activities
+      if (user.recentActivities.length > 4) { // Changed from 5 to 4
         user.recentActivities.pop();
       }
 
