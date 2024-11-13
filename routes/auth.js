@@ -5,11 +5,6 @@ import { genSalt, hash } from "bcryptjs";
 import { body, validationResult } from "express-validator";
 import User from "../models/User"; // Ensure correct import
 
-console.log("User model:", User);
-console.log(
-  "Does User have findOne method?",
-  typeof User.findOne === "function"
-);
 
 // Register Route
 router.post(

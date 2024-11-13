@@ -6,13 +6,6 @@ const bcrypt = require("bcryptjs"); // Import bcrypt
 // Retrieve the User model from Mongoose
 const User = require("../models/User"); // Correct import
 
-// Add additional logging to verify the imported User model
-console.log("Imported User model:", User);
-console.log(
-  "Does User have findOne method?",
-  typeof User.findOne === "function"
-);
-
 // Additional logging as per the suggested code change
 console.log("User:", User);
 
