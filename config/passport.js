@@ -1,22 +1,20 @@
-require("dotenv").config(); // Ensure dotenv is configured first
+// config/passport.js
+require("dotenv").config(); // Pastikan dotenv dikonfigurasi terlebih dahulu
 
 const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy; // Add this line
-const bcrypt = require("bcryptjs"); // Import bcrypt
-// Retrieve the User model from Mongoose
-const User = require("../models/User"); // Correct import
+const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcryptjs");
+const User = require("../models/User"); // Pastikan path benar
 
-// Additional logging as per the suggested code change
 console.log("User:", User);
 
 // Configure Local Strategy
 passport.use(
   new LocalStrategy(
-    { usernameField: "email" }, // Use email instead of default username
+    { usernameField: "email" }, // Gunakan email sebagai username
     async (email, password, done) => {
       try {
-        const users = await User.find({ email }).limit(1);
-        const user = users[0];
+        const user = await User.findOne({ email }).limit(1);
         if (!user) {
           return done(null, false, { message: "Email tidak terdaftar" });
         }
@@ -39,8 +37,8 @@ passport.use(
   )
 );
 
-// Comment out Google Strategy for manual authentication
 /*
+// Google Strategy (dalam komentar)
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 passport.use(
