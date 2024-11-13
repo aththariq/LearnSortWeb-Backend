@@ -21,6 +21,17 @@ const userSchema = new mongoose.Schema({
     unique: true,
     sparse: true, 
   },
+  xp: {
+    type: Number,
+    default: 0,
+    index: true, 
+  },
+  recentActivities: [
+    {
+      activity: { type: String, required: true },
+      date: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);

@@ -127,12 +127,60 @@ router.get("/status", (req, res) => {
       user: {
         id: req.user.id,
         email: req.user.email,
-        username: req.user.username, // Ensure username is sent
+        username: req.user.username,
+        xp: req.user.xp, // Include XP
+        recentActivities: req.user.recentActivities, // Include recent activities
       },
     });
   } else {
     res.json({ authenticated: false });
   }
 });
+
+// Log Activity Route
+router.post(
+  "/log-activity",
+  [
+    body("activity").notEmpty().withMessage("Activity is required"),
+    body("xpGained")
+      .isInt({ min: 1 })
+      .withMessage("XP gained must be a positive integer"),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ msg: "User not authenticated" });
+    }
+
+    const { activity, xpGained } = req.body;
+
+    try {
+      // Update user's XP and add to recent activities
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ msg: "User not found" });
+      }
+
+      user.xp += xpGained;
+      user.recentActivities.unshift({ activity, xpGained });
+
+      // Keep only the latest 5 activities
+      if (user.recentActivities.length > 5) {
+        user.recentActivities.pop();
+      }
+
+      await user.save();
+
+      res.json({ msg: "Activity logged successfully", xp: user.xp, recentActivities: user.recentActivities });
+    } catch (err) {
+      console.error("Error logging activity:", err.message);
+      res.status(500).send("Server Error");
+    }
+  }
+);
 
 module.exports = router;
