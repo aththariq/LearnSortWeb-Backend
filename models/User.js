@@ -14,12 +14,12 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: function() { return !this.googleId; }, // Make password required only if googleId is not present
+    required: function() { return !this.googleId; }, 
   },
-  googleId: { // Add this field
+  googleId: {
     type: String,
     unique: true,
-    sparse: true, // Allows multiple documents without a googleId
+    sparse: true, 
   },
 });
 

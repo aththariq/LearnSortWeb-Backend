@@ -121,12 +121,13 @@ router.get(
 // Status Route
 router.get("/status", (req, res) => {
   if (req.isAuthenticated()) {
+    console.log("Authenticated user:", req.user); // Debugging
     res.json({
       authenticated: true,
       user: {
         id: req.user.id,
         email: req.user.email,
-        username: req.user.username,
+        username: req.user.username, // Ensure username is sent
       },
     });
   } else {

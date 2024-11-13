@@ -2,19 +2,19 @@ require("dotenv").config(); // Pastikan dotenv dikonfigurasi terlebih dahulu
 
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const GoogleStrategy = require("passport-google-oauth20").Strategy; // Ensure correct import
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const bcrypt = require("bcryptjs");
-const User = require("../models/User"); // Pastikan path benar
+const User = require("../models/User"); 
 
 console.log("User:", User);
 
 // Configure Local Strategy
 passport.use(
   new LocalStrategy(
-    { usernameField: "email" }, // Gunakan email sebagai username
+    { usernameField: "email" }, 
     async (email, password, done) => {
       try {
-        const user = await User.findOne({ email }); // Removed .limit(1)
+        const user = await User.findOne({ email }); 
         if (!user) {
           return done(null, false, { message: "Email tidak terdaftar" });
         }
@@ -37,7 +37,7 @@ passport.use(
   )
 );
 
-
+// Google OAuth Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -51,10 +51,11 @@ passport.use(
         if (!user) {
           user = await User.create({
             googleId: profile.id,
-            username: profile.displayName,
+            username: profile.displayName, // Ensure username is set
             email: profile.emails[0].value,
           });
         }
+        console.log("Authenticated user via Google:", user); // Debugging
         done(null, user);
       } catch (err) {
         console.error("Error in GoogleStrategy:", err.message);

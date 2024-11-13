@@ -59,6 +59,11 @@ app.use("/auth/", authLimiter);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// Add these lines after setting up middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url} - Authenticated: ${req.isAuthenticated()}`);
+  next();
+});
 
 mongoose
   .connect(process.env.MONGO_URI, {
