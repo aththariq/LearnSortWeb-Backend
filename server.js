@@ -114,7 +114,7 @@ mongoose.connection.once("open", () => {
 
   // Replace the existing static middleware
   // app.use(express.static(path.join(__dirname, "public")));
-  app.use(express.static(path.join(__dirname, "../frontend"))); // Serve frontend directory
+  app.use(express.static(path.join(__dirname, "../LearnSortWeb-Frontend"))); // Serve the correct frontend directory
 
   app.use("/auth", authRoutes); // Now correctly references the router
   console.log("Authentication routes have been registered");
