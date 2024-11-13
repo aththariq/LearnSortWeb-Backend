@@ -101,7 +101,7 @@ mongoose.connection.once("open", () => {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  require('./config/passport'); // Ensure this is after passport initialization
+  require('./config/passport'); 
 
   app.use(express.static(path.join(__dirname, "public")));
 
