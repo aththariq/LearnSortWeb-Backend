@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  googleId: { // Add this field
+    type: String,
+    unique: true,
+    sparse: true, // Allows multiple documents without a googleId
+  },
 });
 
 const User = mongoose.model("User", userSchema);
