@@ -37,7 +37,7 @@ passport.use(
   )
 );
 
-// Configure Google Strategy
+
 passport.use(
   new GoogleStrategy(
     {
