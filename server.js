@@ -98,6 +98,7 @@ mongoose.connection.once("open", () => {
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
+        sameSite: "none", // Add this line to allow cross-origin cookies
         maxAge: 1000 * 60 * 60 * 24 * 7,
       },
     })
