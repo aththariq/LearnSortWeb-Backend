@@ -14,6 +14,8 @@ const path = require("path");
 dotenv.config();
 const app = express();
 
+const isProduction = process.env.NODE_ENV === "production"; // Determine environment
+
 const allowedOrigins = [
   "https://learn-sort-web.vercel.app",
   "http://127.0.0.1:5500",
@@ -59,12 +61,7 @@ app.use("/auth/", authLimiter);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Add these lines after setting up middleware
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url} - Authenticated: ${req.isAuthenticated()}`);
-  next();
-});
-
+// Move session and passport middleware before logging middleware
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -97,9 +94,9 @@ mongoose.connection.once("open", () => {
       store: store,
       cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none", // Add this line to allow cross-origin cookies
-        maxAge: 1000 * 60 * 60 * 24 * 7,
+        secure: isProduction, // true in production
+        sameSite: isProduction ? "none" : "lax", // 'none' for cross-origin in production, 'lax' otherwise
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
       },
     })
   );
@@ -108,6 +105,12 @@ mongoose.connection.once("open", () => {
 
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Move logging middleware after session and passport
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url} - Authenticated: ${req.isAuthenticated()}`);
+    next();
+  });
 
   app.use(express.static(path.join(__dirname, "public")));
 
