@@ -13,6 +13,9 @@ console.log(
   typeof User.findOne === "function"
 );
 
+// Additional logging as per the suggested code change
+console.log("User:", User);
+
 // Configure Local Strategy
 passport.use(
   new LocalStrategy(

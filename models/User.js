@@ -1,13 +1,13 @@
-import mongoose, { model } from "mongoose";
-var { Schema } = mongoose;
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-var userSchema = new Schema(
+const userSchema = new Schema(
   {
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
   },
-  { collection: "userInfo" }
-); // nama koleksi 'userInfo'
+  { collection: 'userInfo' }
+);
 
-export default model("User", userSchema); // nama model 'User'
+module.exports = mongoose.model('User', userSchema);
