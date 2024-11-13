@@ -1,7 +1,7 @@
 // backend/routes/test.js
-import { Router } from "express";
-const router = Router();
-import User from "../models/User"; // Ensure correct import
+const express = require("express");
+const router = express.Router();
+const User = require("../models/User"); // Ensure correct import
 
 router.get("/test-user", async (req, res) => {
   console.log("Test route '/test/test-user' was accessed"); // Add this line
@@ -18,4 +18,4 @@ router.get("/test-user", async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

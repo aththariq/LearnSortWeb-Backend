@@ -1,12 +1,15 @@
-// routes/auth.js
-const { Router } = require("express");
-const router = Router();
+const express = require("express");
+const router = express.Router();
 const passport = require("passport");
-const { genSalt, hash } = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
-const User = require("../models/User"); // Pastikan path benar
+const User = require("../models/User"); // Ensure correct import
 
-console.log("User:", User);
+console.log("User model:", User);
+console.log(
+  "Does User have findOne method?",
+  typeof User.findOne === "function"
+);
 
 // Register Route
 router.post(
@@ -27,29 +30,29 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
+    // Extract user details
     const { username, email, password } = req.body;
 
     try {
-      let user = await User.findOne({ email });
-      if (user) {
-        return res.status(400).json({ msg: "User already exists" });
+      // Check if user already exists
+      const existingUsers = await User.find({ email }).limit(1);
+      if (existingUsers.length > 0) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Email sudah terdaftar" }] });
       }
 
-      user = new User({
-        username,
-        email,
-        password,
-      });
+      const newUser = new User({ username, email, password });
 
-      const salt = await genSalt(10);
-      user.password = await hash(password, salt);
+      // Hash password
+      const salt = await bcrypt.genSalt(10);
+      newUser.password = await bcrypt.hash(password, salt);
 
-      await user.save();
-
-      res.status(201).json({ msg: "User registered successfully" });
+      await newUser.save();
+      res.status(201).json({ msg: "User terdaftar" });
     } catch (err) {
       console.error(err.message);
-      res.status(500).send("Server error");
+      res.status(500).send("Server Error");
     }
   }
 );
