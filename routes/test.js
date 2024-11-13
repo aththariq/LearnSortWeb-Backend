@@ -6,7 +6,8 @@ import User from "../models/User"; // Ensure correct import
 router.get("/test-user", async (req, res) => {
   console.log("Test route '/test/test-user' was accessed"); // Add this line
   try {
-    const user = await User.findOne();
+    const users = await User.find().limit(1);
+    const user = users[0];
     if (user) {
       res.json(user);
     } else {

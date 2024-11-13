@@ -35,8 +35,8 @@ router.post(
 
     try {
       // Check if user already exists
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
+      const existingUsers = await User.find({ email }).limit(1);
+      if (existingUsers.length > 0) {
         return res
           .status(400)
           .json({ errors: [{ msg: "Email sudah terdaftar" }] });

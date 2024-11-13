@@ -22,7 +22,8 @@ passport.use(
     { usernameField: "email" }, // Use email instead of default username
     async (email, password, done) => {
       try {
-        const user = await User.findOne({ email });
+        const users = await User.find({ email }).limit(1);
+        const user = users[0];
         if (!user) {
           return done(null, false, { message: "Email tidak terdaftar" });
         }
