@@ -19,6 +19,7 @@ const isProduction = process.env.NODE_ENV === "production"; // Determine environ
 const allowedOrigins = [
   "https://learn-sort-web.vercel.app",
   "http://127.0.0.1:5500",
+  "https://learnsort-00d5721850fc.herokuapp.com", // Ensure this is correct
 ];
 
 const corsOptions = {
@@ -114,7 +115,7 @@ mongoose.connection.once("open", () => {
 
   // Replace the existing static middleware
   // app.use(express.static(path.join(__dirname, "public")));
-  app.use(express.static(path.join(__dirname, "../LearnSortWeb-Frontend"))); // Serve the correct frontend directory
+  app.use(express.static(path.join(__dirname, "../LearnSortWeb/frontend"))); // Corrected frontend directory path
 
   app.use("/auth", authRoutes); // Now correctly references the router
   console.log("Authentication routes have been registered");
