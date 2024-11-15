@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
-const User = require("../models/User"); // Ensure correct import
+const User = require("../models/User");
 
 console.log("User model:", User);
 console.log(
@@ -30,11 +30,9 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    // Extract user details
     const { username, email, password } = req.body;
 
     try {
-      // Check if user already exists
       const existingUsers = await User.find({ email }).limit(1);
       if (existingUsers.length > 0) {
         return res
@@ -44,7 +42,6 @@ router.post(
 
       const newUser = new User({ username, email, password });
 
-      // Hash password
       const salt = await bcrypt.genSalt(10);
       newUser.password = await bcrypt.hash(password, salt);
 
@@ -57,7 +54,6 @@ router.post(
   }
 );
 
-// Login Route
 router.post(
   "/login",
   [
@@ -96,7 +92,6 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
-// Google OAuth Routes
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
@@ -109,7 +104,6 @@ router.get(
   }),
   (req, res) => {
     try {
-      // Redirect to frontend main page after successful login
       res.redirect(`${process.env.FRONTEND_URL}/main-page.html`);
     } catch (error) {
       console.error("Redirect error after OAuth:", error.message);
@@ -118,10 +112,9 @@ router.get(
   }
 );
 
-// Status Route
 router.get("/status", (req, res) => {
   if (req.isAuthenticated()) {
-    console.log("Authenticated user:", req.user); // Debugging
+    console.log("Authenticated user:", req.user);
     res.json({
       authenticated: true,
       user: {
@@ -129,7 +122,7 @@ router.get("/status", (req, res) => {
         email: req.user.email,
         username: req.user.username,
         xp: req.user.xp, // Include XP
-        recentActivities: req.user.recentActivities, // Include recent activities
+        recentActivities: req.user.recentActivities,
       },
     });
   } else {
@@ -137,13 +130,12 @@ router.get("/status", (req, res) => {
   }
 });
 
-// Log Activity Route
 router.post(
   "/log-activity",
   [
     body("activity").notEmpty().withMessage("Activity is required"),
     body("xpGained")
-      .isFloat({ min: 0.1 }) // Changed from isInt to isFloat
+      .isFloat({ min: 0.1 })
       .withMessage("XP gained must be a positive number"),
   ],
   async (req, res) => {
@@ -159,7 +151,6 @@ router.post(
     const { activity, xpGained } = req.body;
 
     try {
-      // Update user's XP and add to recent activities
       const user = await User.findById(req.user.id);
       if (!user) {
         return res.status(404).json({ msg: "User not found" });
@@ -168,14 +159,17 @@ router.post(
       user.xp += xpGained;
       user.recentActivities.unshift({ activity, xpGained });
 
-      // Keep only the latest 4 activities
-      if (user.recentActivities.length > 4) { // Changed from 5 to 4
+      if (user.recentActivities.length > 4) {
         user.recentActivities.pop();
       }
 
       await user.save();
 
-      res.json({ msg: "Activity logged successfully", xp: user.xp, recentActivities: user.recentActivities });
+      res.json({
+        msg: "Activity logged successfully",
+        xp: user.xp,
+        recentActivities: user.recentActivities,
+      });
     } catch (err) {
       console.error("Error logging activity:", err.message);
       res.status(500).send("Server Error");

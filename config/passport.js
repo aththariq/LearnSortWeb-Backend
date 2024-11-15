@@ -1,4 +1,4 @@
-require("dotenv").config(); // Pastikan dotenv dikonfigurasi terlebih dahulu
+require("dotenv").config(); 
 
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
@@ -8,7 +8,6 @@ const User = require("../models/User");
 
 console.log("User:", User);
 
-// Configure Local Strategy
 passport.use(
   new LocalStrategy(
     { usernameField: "email" }, 
@@ -37,7 +36,6 @@ passport.use(
   )
 );
 
-// Google OAuth Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -51,11 +49,11 @@ passport.use(
         if (!user) {
           user = await User.create({
             googleId: profile.id,
-            username: profile.displayName, // Ensure username is set
+            username: profile.displayName,
             email: profile.emails[0].value,
           });
         }
-        console.log("Authenticated user via Google:", user); // Debugging
+        console.log("Authenticated user via Google:", user); 
         done(null, user);
       } catch (err) {
         console.error("Error in GoogleStrategy:", err.message);

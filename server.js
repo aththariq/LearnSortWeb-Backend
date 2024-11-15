@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const passport = require("passport"); // Import passport
+const passport = require("passport");
 const authRoutes = require("./routes/auth");
 const testRoutes = require("./routes/test");
 const MongoDBStore = require("connect-mongodb-session")(session);
@@ -14,12 +14,12 @@ const path = require("path");
 dotenv.config();
 const app = express();
 
-const isProduction = process.env.NODE_ENV === "production"; // Determine environment
+const isProduction = process.env.NODE_ENV === "production";
 
 const allowedOrigins = [
   "https://learn-sort-web.vercel.app",
   "http://127.0.0.1:5500",
-  "https://learnsort-00d5721850fc.herokuapp.com", // Ensure this is correct
+  "https://learnsort-00d5721850fc.herokuapp.com",
 ];
 
 const corsOptions = {
@@ -62,7 +62,6 @@ app.use("/auth/", authLimiter);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Move session and passport middleware before logging middleware
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -95,32 +94,28 @@ mongoose.connection.once("open", () => {
       store: store,
       cookie: {
         httpOnly: true,
-        secure: isProduction, // true in production
-        sameSite: isProduction ? "none" : "lax", // 'none' for cross-origin in production, 'lax' otherwise
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+        maxAge: 1000 * 60 * 60 * 24 * 7,
       },
     })
   );
 
-  require('./config/passport'); 
+  require("./config/passport");
 
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Move logging middleware after session and passport
   app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url} - Authenticated: ${req.isAuthenticated()}`);
+    console.log(
+      `${req.method} ${req.url} - Authenticated: ${req.isAuthenticated()}`
+    );
     next();
   });
-
-  // Replace the existing static middleware
-  // app.use(express.static(path.join(__dirname, "public")));
-  app.use(express.static(path.join(__dirname, "../LearnSortWeb/frontend"))); // Corrected frontend directory path
-
-  app.use("/auth", authRoutes); // Now correctly references the router
+  app.use(express.static(path.join(__dirname, "../LearnSortWeb/frontend")));
   console.log("Authentication routes have been registered");
 
-  app.use("/test", testRoutes); // Now correctly references the router
+  app.use("/test", testRoutes);
   console.log("Test routes have been registered");
 
   const PORT = process.env.PORT || 5001;
